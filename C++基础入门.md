@@ -426,3 +426,473 @@ int main() {
 ```
 
 `布尔类型：非0都为真`
+
+# 3 运算符
+
+| 类型       | 作用                     |
+| ---------- | ------------------------ |
+| 算术运算符 | 四则运算                 |
+| 赋值运算符 | 将表达式值赋给变量       |
+| 比较运算符 | 表达式的比较，返回真、假 |
+| 逻辑运算符 | 根据表达式值返回真、假   |
+
+## 3.1 算术运算符
+
+| 运算符 | 术语         | 示例           | 结果    |
+| ------ | ------------ | -------------- | ------- |
+| +      | 正号         | +3             | 3       |
+| -      | 负号         | -3             | -3      |
+| +      | 加           | 10+5           | 15      |
+| -      | 减           | 10-5           | 5       |
+| *      | 乘           | 10*5           | 50      |
+| /      | 除           | 10/5           | 2       |
+| %      | 取模（取余） | 10%3           | 1       |
+| ++     | 前置递增     | a=2;b=**++**a; | a=3;b=3 |
+| ++     | 后置递增     | a=2;b=**a**++; | a=3;b=2 |
+| --     | 前置递减     | a=2;b=**--**a; | a=1;b=1 |
+| --     | 后置递减     | a=2;b=**a--**; | a=1;b=2 |
+
+`只有整型变量，可以取模运算`
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	//除
+	int a = 10;
+	int b = 3;
+	cout << a / b << endl;//两个整数相除，结果仍为整数	——失真
+
+	cout << a % b << endl;
+	system("pause");
+
+	return 0;
+}
+```
+
+## 3.2 赋值运算
+
+| 运算符 | 术语 | 示例      | 结果 |
+| :----- | :--- | :-------- | :--- |
+| =      | 赋值 | a=2       | a=2  |
+| +=     | 加等 | a=0;a+=2  | a=2  |
+| -=     | 减等 | a=5;a-=3; | a=2  |
+| *=     | 乘等 | a=2;a*=2  | a=4  |
+| /=     | 除等 | a=4;a/=2  | a=2  |
+| %=     | 模等 | a=3;a%2   | a=1  |
+
+## 3.3 比较运算符
+
+| 运算符 | 术语     | 示例 | 结果 |
+| ------ | -------- | ---- | ---- |
+| ==     | 相等     | 4==3 | 0    |
+| !=     | 不等     | 4!=3 | 1    |
+| <      | 小于     |      |      |
+| >      | 大于     |      |      |
+| <=     | 小于等于 |      |      |
+| >=     | 大于等于 |      |      |
+
+## 3.4 逻辑运算符
+
+| 运算符 | 术语 | 示例   | 结果                            |
+| ------ | ---- | ------ | ------------------------------- |
+| ！     | 非   | !a     |                                 |
+| &&     | 与   | a&&b   | 都为真时，为真；否则为假        |
+| \|\|   | 或   | a\|\|b | 1个为真，则为真；都为假，才为假 |
+
+`||：同假为假，其余为真`
+
+# 4 流程结构
+
+C/C++支持基本的3种程序运行结构，顺序、选择、循环
+
+* 顺序结构：程序顺序执行，不发生跳转
+* 选择结构：按条件是否满足，有条件执行相应功能
+* 循环结构：按条件是否满足，循环多次执行某段代码
+
+## 4.1 选择结构
+
+### 4.1.1 if语句
+
+* 单行if
+* 多行if
+* 多条件if
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	//单行if
+	//输入分数，600及以上985，否则回家养猪吧
+
+	float score = 600.5f;
+	cout << "请输入分数：";
+	cin >> score;
+
+	if (score >= 600)
+	{
+		cout << "恭喜考上985！" << endl;
+	}
+	else
+	{
+		cout << "回家养猪吧！" << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 4.1.2 三目运算符
+
+* 语法：`表达式1？表达式2：表达式3`
+* 三目运算符，返回变量；
+* 返回的变量可以继续赋值
+
+`c=(a>b?a:b)`
+
+`(a>b?a:b)=100`
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	//max
+
+	int num1 = 100;
+	int num2 = 90;
+
+	cout << "最大值为："<<(num1>num2 ? num1:num2)<<endl;
+
+	//再赋值
+	cout << "最大值为：" << ((num1 > num2 ? num1 : num2)=1000) << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 4.1.3 swith语句
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	//给电影打分
+	//9-10	经典
+	//8		优秀
+	//6-7	一般
+	//其它	烂片
+	cout << "请打分：";
+	int score = 0;
+	cin >> score;
+
+	if (score <= 10 && score >= 1)
+	{
+		switch (score)
+		{
+		case 10:
+		case 9:
+			cout << "经典" << endl;
+			break;
+		case 8:
+			cout << "优秀" << endl;
+			break;
+		case 7:
+		case 6:
+			cout << "一般" << endl;
+			break;
+		default:
+			cout << "烂片" << endl;
+			break;
+		}
+	}
+	else
+	{
+		cout << "打分无效！" << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+tip1:switch语句中，表达式类型只能是整型或字符型
+
+tip2:case中要有break，否则会一直向下执行
+
+总结：与if语句比，switch结构清晰，执行效率高，但不能判断区间
+
+## 4.2 循环结构
+
+### 4.2.1 while循环
+
+语法：`while(条件语句){循环语句}`
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	int num = 0;
+	while (num < 10)
+	{
+		cout << num << endl;
+		num++;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 猜数字
+  * 随机生成1-100间数字
+  * 提示玩家过大或过小，猜对恭喜玩家，退出
+
+```c++
+#include<iostream>
+using namespace std;
+#include<ctime>
+
+int main() {
+
+	//随机种子
+	srand((unsigned int)time(NULL));
+	//伪随机数
+	int num = rand() % 100 + 1;//0-99	+1,随机数
+	cout << num << endl;
+
+	int guess = 0;
+
+	while (1)
+	{
+		cout << "请猜数字";
+		cin >> guess;
+
+		if (guess < num)
+		{
+			cout << "小了" << endl;
+		}
+		else if(guess > num)
+		{
+			cout << "大了" << endl;
+		}
+		else
+		{
+			cout << "对了" << endl;
+			break;
+		}
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 4.2.2 do...while循环
+
+语法：`do{循环语句}while(循环条件);`
+
+注：与while区别，先执行一次
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	int num = 0;
+	do
+	{
+		cout << num << endl;
+		num++;
+	} while (num<10);
+	
+	system("pause");
+
+	return 0;
+}
+```
+
+* 水仙花数
+  * 指一个3位数，每个位上的数字的3次幂之和等于它本身，如1^3+5^3+3^3=153
+  * 用do...while，求出所有3位数中的水仙花数
+
+```c++
+#include<iostream>
+using namespace std;
+#include<cmath>
+
+int main() {
+
+	//水仙花数
+	//153=1^3+5^3+3^3
+
+	int num = 152;
+	do
+	{
+		int temp = num;
+		if (pow(temp%10,3) + pow(temp/10 % 10,3) + pow(temp / 100,3) == num)
+		{
+			cout << num << endl;
+		}
+
+		num++;
+	} while (num < 1000);
+
+	system("pause");
+
+	return 0;
+}
+```
+
+`#include<cmath>`
+
+`pow(x,y)`
+
+### 4.2.3 for循环
+
+语法：`for(起始表达式;条件表达式;末尾循环体){循环语句}`
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	for (int i = 0; i < 10; i++) 
+	{
+		cout << i << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 敲桌子
+  * 1-100，数字个位、十位含有7，或该数字为7的倍数，打印敲桌子，其余直接输出
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	for (int i = 1; i <=100; i++) 
+	{
+		if (i % 10 == 7 || i / 10 % 10 == 7 || i % 7 == 0)
+		{
+			cout << "敲桌子" << endl;
+		}
+		else
+		{
+			cout << i << endl;
+		}
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 4.2.4 嵌套循环
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	for (int j = 0; j < 10; j++)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cout << "* ";
+		}
+		cout << endl;
+	}
+
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 乘法表
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	for (int j = 1; j < 10; j++)
+	{
+		for (int i = 1; i <= j; i++)
+		{
+			cout << i << "x" << j << "=" << i * j<<'\t';
+		}
+		cout << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+## 4.3 跳转语句
+
+### 4.3.1 break语句
+
+* switch语句中
+* 循环语句中
+* 嵌套语句中
+
+### 4.3.2 continue语句
+
+跳过本次中尚未执行的语句，继续下次循环
+
+### 4.3.3 goto语句
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	cout << "1.xxxx" << endl;
+	goto FLAG;
+
+	cout << "2.xxxx" << endl;
+	cout << "3.xxxx" << endl;
+	cout << "4.xxxx" << endl;
+
+	FLAG:
+	cout << "5.xxxx" << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
