@@ -1,5 +1,7 @@
 ---
 
+
+
 ---
 
 # 1 C++初识
@@ -1411,3 +1413,295 @@ int main()
 }
 ```
 
+# 7 指针
+
+## 7.1 基本概念
+
+作用：通过指针间接访问内存，指针就是一个地址
+
+## 7.2 定义和使用
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int a = 100;
+	int* p = &a;
+	cout << "a的地址：" << &a << endl;
+	cout << "p指针为：" << p << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+## 7.3 所占的内存空间
+
+* 32位系统：4字节
+* 64位系统：8字节
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int a = 100;
+	int* p = &a;
+
+	cout << "size of (int *)=\t" << sizeof(int *) << endl;
+	cout << "size of (double *)=\t" << sizeof(double*) << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+## 7.4 空指针和野指针
+
+* 空指针：内存中编号为0的空间
+* 用途：初始化指针
+* 注意：指向的空间不可访问
+
+**空指针**，访问报错！
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	//
+	int* p = NULL;
+
+	//空指针不可访问
+	//内存编号0~255为系统占用内存，不允许访问
+	//*p=100;	//非法
+
+	system("pause");
+
+	return 0;
+}
+```
+
+**野指针**，访问报错！
+
+```
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	//
+	int* p = (int *)0x110;
+
+	//访问报错
+	cout << *p << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+## 7.5 const修饰指针
+
+三种情况：
+
+1. const修饰指针——常量指针  const int * p——指向内容不可改
+2. const修饰常量——指针常量  int * const p——指针指向不可改
+3. const修饰指针、常量——const int * const p
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	/*
+		1. const修饰指针——常量指针  const int * p——指向内容不可改
+		2. const修饰常量——指针常量  int * const p——指针指向不可改
+		3. const修饰指针、常量——const int * const p
+	*/
+	//常量指针
+	int a = 100;
+	const int* p = &a;
+	//*p=		//常量指针，常量哦，不可改——不能通过*p赋值
+	a = 1000;
+	cout << *p << endl;
+
+	//
+	int a2 = 100;
+	int* const p2 = &a2;
+	//p2=		//指针常量，不能改指向
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* **迷糊**
+
+## 7.6 指针和数组
+
+* 指针访问数组中元素
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	/*
+		指针访问数组中元素
+	*/
+	int arr[] = { 1,3,5,7,9 };
+
+	//指针访问
+	int* p = arr;
+
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	{
+		cout << *p << " ";
+		p++;
+	}
+	cout << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* for循环遍历，指针++
+
+## 7.7 指针和函数
+
+**作用：**传址，会改实参值
+
+```c++
+#include<iostream>
+using namespace std;
+
+void swap1(int a, int b)
+{
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+void swap2(int* p1, int* p2)
+{
+	int tmp = *p1;
+	*p1 = *p2;
+	*p2 = tmp;
+}
+int main()
+{
+	//传值,实参未变
+	int a = 10;
+	int b = 20;
+	swap1(a, b);
+	cout << a << " " << b << endl;
+	
+	//传址，实参变
+	int x = 1;
+	int y = 9;
+	swap2(&x, &y);	//传址
+	cout << x << " " << y << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 传值
+* 传址
+
+## 7.8 指针、数组、函数
+
+**案例：封装一个函数，利用冒泡排序，实现对整形数组的升序排列，如int arr[]={4,3,6,9,1,2,10,8,7,5}**
+
+* 函数、数组、指针
+* 冒泡排序、flag
+
+```c++
+#include<iostream>
+using namespace std;
+
+/*
+	案例：封装一个函数，利用冒泡排序，实现对整形数组的升序排列，如int arr[]={4,3,6,9,1,2,10,8,7,5}
+
+	* 函数、数组、指针
+	* 冒泡排序、flag
+*/
+void bubblesort(int*p,int len)
+{
+	//轮数、次数
+	int lunshu = 0;
+	int cishu = 0;
+
+	for (int i = 0; i < len-1; i++)					//外层，第几轮，元素个数-1
+	{
+		//flag，一轮中已经不再升序，则考虑跳出循环
+		bool flag = 0;
+
+		for (int j = 0; j < len -1- i; j++)			//内层，第几次
+		{
+			if (p[j]>p[j+1])
+			{
+				//int tmp = p[j];
+				//p[j] = p[j + 1];
+				//p[j + 1] = tmp;
+				int tmp = *(p + j);
+				*(p + j) = *(p + j + 1);
+				*(p + j + 1) = tmp;
+
+				flag = 1;				//有继续排序
+				cishu++;				//排序1次，自+
+			}
+		}
+		if (flag == 0)
+		{
+			break;						//1轮中顺序已ok，跳出循环，结束
+		}
+		lunshu = i + 1;
+	}
+	cout << "合计排序" << lunshu << "轮，" << cishu << "次" << endl;
+}
+void myprint(int*p,int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		cout << *p << " ";
+		p++;
+	}
+	cout << endl;
+}
+int main()
+{
+	//int arr[] = { 4,3,6,9,1,2,10,8,7,5 };
+	int arr[] = { 1,2,3,4,5,6,7,8,10,9 };
+
+	//指针遍历，打印
+	cout << "排序前：";
+	int len = sizeof(arr) / sizeof(arr[0]);//元素个数
+	myprint(arr, len);
+
+	//冒泡排序
+	bubblesort(arr,len);
+
+	//指针遍历，打印
+	cout << "排序后：";
+	myprint(arr, len);
+	system("pause");
+
+	return 0;
+}
+```
