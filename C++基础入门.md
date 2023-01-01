@@ -896,3 +896,518 @@ int main() {
 	return 0;
 }
 ```
+
+# 5 数组
+
+## 5.1 概述
+
+数组，一个集合，存放了相同类型的数据元素
+
+特点1：数组中的每个元素都是相同的数据类型
+
+特点2：连续的内存位置组成
+
+## 5.2 一维数组
+
+### 5.2.1 定义
+
+三种定义方式：
+
+1.`数据类型 数组名[数组长度]`
+
+2.`数据类型 数组名[数组长度]={值1,值2,...}`
+
+3.`数据类型 数组名[]={值1,值2,...}`
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		1.`数据类型 数组名[数组长度]`
+
+		2.`数据类型 数组名[数组长度]={值1,值2,...}`
+
+		3.`数据类型 数组名[]={值1,值2,...}`
+	*/
+
+	int arr[5];
+	for (int i = 0; i < 5; i++)
+	{
+		arr[i] = 10 * (i+1);
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+
+	int arr2[5] = {1,3,5,7};	//未给值，填充0
+	for (int i = 0; i < 5; i++)
+	{
+		cout << arr2[i] << " ";
+	}
+	cout << endl;
+
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 5.2.2 数组名
+
+1. 统计数组在内存中的长度
+2. 数组在内存中的首地址
+
+**示例：**
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	int arr[5] = {2,4,6,8,10};
+
+	//内存大小
+	cout << "数组占用的内存空间" << sizeof(arr) << endl;
+
+	//数组首地址
+	cout <<arr<< endl;
+	//首元素地址
+	cout << &arr[0] << endl;
+	//第二个元素地址
+	cout << &arr[1] << endl;	//连续的线性空间
+	//
+	cout << *(arr) << endl;		//指针
+
+	system("pause");
+
+	return 0;
+}
+```
+
+**练习1：**5只小猪称体重
+
+数组中记录了五只小猪体重，如：int arr[5]={100,200,300,150,250},找出并打印最重的值。
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		练习1：**5只小猪称体重**
+		数组中记录了五只小猪体重，如：int arr[5]={100,200,300,150,250},找出并打印最重的值。
+	*/
+	int arr[5] = { 100,200,300,150,250 };
+
+	int max = 0;
+	for (int i = 0; i < 5; i++) {
+
+		max = (arr[i] > max ? arr[i] : max);
+	}
+	cout << max << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* for循环遍历
+* 三目运算符
+
+**练习2：**数组元素逆序
+
+声明一个5元素数组，将元素逆序，如1，2，3，4，5，逆序后为5，4，3，2，1。
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		声明一个5元素数组，将元素逆序，如1，2，3，4，5，逆序后为5，4，3，2，1。
+	*/
+	int arr[] = { 100,200,300,150,250,1000};
+
+	int len = sizeof(arr)/sizeof(arr[0]);
+	int left = 0;
+	int right = len-1;
+	int temp = 0;
+	for (left = 0; left<right;left++,right--) 
+	{
+		temp = arr[left];
+		arr[left] = arr[right];
+		arr[right] = temp;
+	}
+	for (int i = 0; i < len; i++)
+	{
+		cout << arr[i]<<" ";
+	}
+	cout << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 下标访问，left/right  sizeof(arr)/sizeof(arr[0])元素个数
+* for循环遍历，也可以用`while(left<right)`
+
+### 5.2.3 冒泡排序
+
+常用的排序算法，升序排列，如{4,2,8,0,5,7,1,3,9}
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		常用的排序算法，升序排列，如{4,2,8,0,5,7,1,3,9}
+	*/
+	//int arr[] = { 4,2,8,0,5,7,1,3,9 };
+	int arr[] = { 9,8,7,5,4,3,2,1,0 };
+	//int arr[] = { 1,2,3,4,5,6,7,9,8 };
+
+	cout << "排序前：";
+	int len = sizeof(arr) / sizeof(arr[0]);
+	for (int i = 0; i < len; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+
+	int lunshu = 0;
+	int cishu = 0;
+
+	for (int j = 0; j < len-1; j++)	//外层轮数，元素个数-1
+	{
+		bool flag = 0;					//交换标志位
+
+		for (int i = 0; i < len-1-j; i++)	//内层次数，元素个数-1-轮数
+		{
+			int tmp = 0;
+			if (arr[i] > arr[i + 1])
+			{
+				tmp = arr[i];
+				arr[i] = arr[i + 1];
+				arr[i + 1] = tmp;
+				flag = 1;				//交换中
+				cishu++;
+			}
+		}
+
+		if (flag == 0)
+		{
+			break;
+		}
+		lunshu = j + 1;
+
+	}
+	cout << "交换了" << lunshu << "轮" << endl;
+	cout << "交换了" << cishu << "次" << endl;
+
+	cout << "升序后：";				//冒泡排序
+	for (int i = 0; i < len; i++)
+	{
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 嵌套for循环，外层轮数、内层次数
+* 设flag，若第n轮中未排，退出
+* **交换了x轮、x次**
+
+## 5.3 二维数组
+
+### 5.3.1 定义方式
+
+```markdown
+数据类型 数组名[行数][列数];
+数据类型 数组名[行数][列数]={{a,b},{c,d}};
+数据类型 数组名[行数][列数]={a,b,c,d};
+数据类型 数组名[][列数]={a,b,c,d};
+```
+
+示例：第2种方式
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		数据类型 数组名[行数][列数];
+		数据类型 数组名[行数][列数]={{a,b},{c,d}};
+		数据类型 数组名[行数][列数]={a,b,c,d};
+		数据类型 数组名[][列数]={a,b,c,d};
+	*/
+	int arr[2][3] =
+	{
+		{1,3,5},
+		{2,4,6}
+	};
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+### 5.3.2 数组名操作
+
+* 查看占用的内存空间大小
+* 二维数组地址
+
+### 5.3.3 应用案例
+
+考试成绩统计：分别输出3名同学的总成绩
+
+|      | 语文 | 数学 | 英语 |
+| ---- | ---- | ---- | ---- |
+| 张三 | 100  | 100  | 100  |
+| 李四 | 90   | 50   | 100  |
+| 王五 | 60   | 70   | 80   |
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main() {
+
+	/*
+		考试成绩统计：分别输出3名同学的总成绩
+	*/
+	int arr[][3] =
+	{
+		{100,100,100},
+		{90,50,100},
+		{60,70,80}
+	};
+	
+	string names[] = { "张三","李四","王五" };
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << arr[i][j] << "\t";
+		}
+		cout << endl;
+	}
+
+	//总成绩
+	int sum[3] = { 0,0,0 };
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			sum[i]+=arr[i][j];
+		}
+		cout << names[i]<<"的总分为："<<sum[i] << endl;
+	}
+
+	system("pause");
+
+	return 0;
+}
+```
+
+# 6 函数
+
+## 6.1 概述
+
+封装代码，减少重复代码
+
+## 6.2 函数定义
+
+`返回值类型 函数名（参数）{函数体语句;return 表达式}`
+
+```c++
+返回值类型 函数名（参数列表）
+{
+    函数体语句;
+    return 表达式
+}
+```
+
+## 6.3 函数调用
+
+```c++
+#include<iostream>
+using namespace std;
+
+//形参
+int add(int num1, int num2)
+{
+	return num1 + num2;
+}
+int main1()
+{
+	int a = 5;
+	int b = 6;
+	//实参
+	cout << add(a, b) << endl;
+
+	system("pause");	//按任意键继续
+	return 0;
+}
+```
+
+## 6.4 值传递
+
+```c++
+#include<iostream>
+using namespace std;
+
+//形参
+void swap(int num1, int num2)
+{
+	cout << "交换前:";
+	cout << num1 << " " << num2 << endl;
+
+	int tmp = num1;
+	num1 = num2;
+	num2 = tmp;
+	cout << "交换后:";
+	cout << num1 << " " << num2 << endl;
+}
+int main()
+{
+	int a = 5;
+	int b = 6;
+	swap(a, b);
+
+	system("pause");	//按任意键继续
+	return 0;
+}
+```
+
+* 不影响实参
+
+## 6.5 函数的常见样式
+
+* 输入参数（有、无）
+* 返回参数（有、无）
+
+## 6.6 函数声明
+
+```c++
+#include<iostream>
+using namespace std;
+
+////声明
+//int max(int, int);
+
+int main()
+{
+	int a = 5;
+	int b = 6;
+	cout << max(a, b) << endl;
+
+	system("pause");	//按任意键继续
+	return 0;
+}
+
+//定义
+int max(int num1, int num2)
+{
+	return num1 > num2 ? num1 : num2;
+}
+```
+
+**vs2019不声明也行？**
+
+## 6.7 分文件编写
+
+```c++
+#include<iostream>
+using namespace std;
+
+////声明
+//void swap(int* p1, int* p2);
+
+int main()
+{
+	int a = 5;
+	int b = 6;
+	swap(&a, &b);
+	cout << a<<" "<<b << endl;
+
+	system("pause");	//按任意键继续
+	return 0;
+}
+
+//定义
+void swap(int *p1, int *p2)
+{
+	int tmp = *p1;
+	*p1 = *p2;
+	*p2 = tmp;
+}
+```
+
+* .h头文件，写函数声明
+* .cpp源文件，写函数定义
+* 传址（指针），实参会变
+
+```c++
+#pragma once
+#include<iostream>
+using namespace std;
+//头文件
+void swap(int* p1, int* p2);
+```
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include "swap.h"
+
+//定义
+void swap(int* p1, int* p2)
+{
+	int tmp = *p1;
+	*p1 = *p2;
+	*p2 = tmp;
+}
+```
+
+```c++
+#include"swap.h"
+
+int main()
+{
+	int a = 5;
+	int b = 6;
+	swap(&a, &b);
+	cout << a << " " << b << endl;
+
+	system("pause");	//按任意键继续
+	return 0;
+}
+```
+
