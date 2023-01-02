@@ -1,12 +1,32 @@
 # 2023_01_Cpp_Class
 
-* ½×¶Î1 »ù´¡Óï·¨    ³õ²½ÁË½â£¬»ù´¡±à³Ì  Í¨Ñ¶Â¼¹ÜÀí
-* ½×¶Î2 ºËĞÄ±à³Ì    ÃæÏò¶ÔÏó£¬´óĞÍÏîÄ¿  Ö°¹¤¹ÜÀíÏµÍ³
-* ½×¶Î3 ½ø½×Ìá¸ß    ·ºĞÍ±à³Ì£¬STLÊ¹ÓÃ   Ñİ½²±ÈÈüÏµÍ³
-  * »ú·¿Ô¤Ô¼ÏµÍ³
+* é˜¶æ®µ1 åŸºç¡€è¯­æ³•    åˆæ­¥äº†è§£ï¼ŒåŸºç¡€ç¼–ç¨‹  é€šè®¯å½•ç®¡ç†
+* é˜¶æ®µ2 æ ¸å¿ƒç¼–ç¨‹    é¢å‘å¯¹è±¡ï¼Œå¤§å‹é¡¹ç›®  èŒå·¥ç®¡ç†ç³»ç»Ÿ
+* é˜¶æ®µ3 è¿›é˜¶æé«˜    æ³›å‹ç¼–ç¨‹ï¼ŒSTLä½¿ç”¨   æ¼”è®²æ¯”èµ›ç³»ç»Ÿ
+  * æœºæˆ¿é¢„çº¦ç³»ç»Ÿ
 
-# .gitignore¡ª¡ªGit ºöÂÔVS2019ĞèÒªÌá½»µÄÍ¨ÓÃÎÄ¼ş
+# 1 .gitignoreâ€”â€”Git å¿½ç•¥VS2019éœ€è¦æäº¤çš„é€šç”¨æ–‡ä»¶
 
-[Git ºöÂÔVisualStudioĞèÒªÌá½»µÄÍ¨ÓÃÎÄ¼ş .gitignore_°®³ÔÄÌÀÒµÄËÉÊóØ¼µÄ²©¿Í-CSDN²©¿Í_git visual studio ºöÂÔÎÄ¼ş](https://blog.csdn.net/csdn2990/article/details/122696324?spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-122696324-blog-83313148.pc_relevant_3mothn_strategy_and_data_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-122696324-blog-83313148.pc_relevant_3mothn_strategy_and_data_recovery&utm_relevant_index=8)
+[Git å¿½ç•¥VisualStudioéœ€è¦æäº¤çš„é€šç”¨æ–‡ä»¶ .gitignore_çˆ±åƒå¥¶é…ªçš„æ¾é¼ ä¸¶çš„åšå®¢-CSDNåšå®¢_git visual studio å¿½ç•¥æ–‡ä»¶](https://blog.csdn.net/csdn2990/article/details/122696324?spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-122696324-blog-83313148.pc_relevant_3mothn_strategy_and_data_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-122696324-blog-83313148.pc_relevant_3mothn_strategy_and_data_recovery&utm_relevant_index=8)
 
-* **Ö±½Ó½èÓÃ**
+* **ç›´æ¥å€Ÿç”¨**
+
+# 2 typoraæ–‡å­—é«˜äº®åŠå¿«æ·é”®è®¾ç½®
+
+1.  æ–‡ä»¶ -> åå¥½è®¾ç½® -> é€šç”¨ -> æ‰“å¼€é«˜çº§è®¾ç½®
+
+2.  ç”¨æ–‡æœ¬ç¼–è¾‘å™¨æ‰“å¼€æ–‡ä»¶å¤¹ä¸­çš„ ==conf.user.json== æ–‡ä»¶
+
+3.  åœ¨ keyBinding æ·»åŠ å¿«æ·é”®ï¼ˆæˆ–è€…å°†åŸæ¥çš„å¿«æ·é”®æ³¨é‡Šç¬¦å·å»æ‰ä¹Ÿå¯ï¼‰
+
+   ```
+     "keyBinding": {
+       // for example: 
+       // "Always on Top": "Ctrl+Shift+P"
+       // All other options are the menu items 'text label' displayed from each typora menu
+       "Highlight":"ctrl+q"
+   ```
+
+4. æ·»åŠ `"Highlight":"ctrl+q"`**ä¿å­˜jsonæ–‡ä»¶åï¼Œé‡å¯ typora**ï¼Œé«˜äº®å³æ˜¾ç¤ºå¿«æ·é”®Ctrl+Qã€‚
+
+åŸæ–‡é“¾æ¥ï¼šhttps://blog.csdn.net/qyj19920704/article/details/122537494

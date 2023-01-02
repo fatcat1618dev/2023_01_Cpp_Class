@@ -1705,3 +1705,407 @@ int main()
 	return 0;
 }
 ```
+
+# 8 结构体
+
+## 8.1 基本概念
+
+自定义数据类型，允许用户存储不同的数据类型
+
+## 8.2 定义与使用
+
+语法：`struct 名称{成员列表}`
+
+**示例：**
+
+vs2019不用引头文件`#include<string>`?
+
+```c++
+#include<iostream>
+using namespace std;
+
+//自定义数据类型，类型集合
+struct Student
+{
+	string name;
+	int age;
+	int score;
+}s3;		//定义时，顺便创建！
+int main()
+{
+	//1.struct Student s1;
+	Student s1;				//创建变量时，struct可省略
+	s1.name = "张涛";
+	s1.age = 16;
+	s1.score = 100;
+	cout << "姓名：" << s1.name << "	年龄：" << s1.age << "	分数：" << s1.score << endl;	//vs2019不用引头文件？
+
+	//2.struct Student s2={...};
+	Student s2 = { "李四",20,99 };
+	cout << "姓名：" << s2.name << "	年龄：" << s2.age << "	分数：" << s2.score << endl;	//vs2019不用引头文件？
+
+	//3.定义时，顺便创建
+	s3= { "王五",20,99 };
+	cout << "姓名：" << s3.name << "	年龄：" << s3.age << "	分数：" << s3.score << endl;	//vs2019不用引头文件？
+
+	system("pause");
+	return 0;
+}
+```
+
+* 创建变量时，struct关键字可省略，定义时不可
+* 用“."访问成员
+
+## 8.3 数组
+
+作用：将自定义结构体放入数组中，方便维护
+
+语法：`struct 结构体名 数组名[元素个数]={{},{},...{}}`
+
+## 8.4 指针
+
+通过指针访问结构体成员，利用操作符`->`访问结构体属性
+
+```c++
+#include<iostream>
+using namespace std;
+
+//定义
+struct Student
+{
+	string name;
+	int age;
+	int score;
+};
+
+int main()
+{
+
+
+	//struct Student s2={...};
+	//struct 结构体名 数组名[元素个数]={{},{},...{}}
+
+	Student stuArr[3] =
+	{
+		{"三",15,99},
+		{"四",16,88},
+		{"五",18,100}
+	};
+	cout << "姓名：" << stuArr[0].name << "	年龄：" << stuArr[0].age << "	分数：" << stuArr[0].score << endl;	//vs2019不用引头文件？
+
+	//遍历，指针
+	Student* p= stuArr;
+	for (int i = 0; i < 3; i++)
+	{
+		cout << "姓名：" << p->name << "	年龄：" << p->age << "	分数：" << p->score << endl;
+		p++;
+	}
+
+	system("pause");
+	return 0;
+}
+```
+
+## 8.5 嵌套
+
+作用：结构体成员可以是另一个结构体
+
+举例：老师辅导学生，老师结构体中记录学生的结构体
+
+```c++
+#include<iostream>
+using namespace std;
+
+//学生
+struct Student
+{
+	string name;
+	int age;
+	int score;
+};
+
+//老师
+struct Teacher
+{
+	int id;//编号
+	string name;//
+	int age;
+	Student stu;	//struct关键字可省
+};
+int main()
+{
+
+	Teacher t1 =
+	{
+		10108,
+		"老王",
+		30,
+		{"涛",15,99}
+	};
+
+	//遍历，指针
+	Teacher* p = &t1;
+	cout << "id：" <<p->id  <<"	名字："<<p->name<< "	年龄：" << p->age << "	学生：" <<p->stu.name << endl;
+
+	system("pause");
+	return 0;
+}
+```
+
+## 8.6 结构体传参
+
+* 传值
+
+* 传址——主函数中会变
+
+```c++
+#include<iostream>
+using namespace std;
+
+struct Student
+{
+	string name;
+	int age;
+	int score;
+};
+
+//传值
+void my_print1(Student s)
+{
+	cout << "姓名：" << s.name << "	年龄：" << s.age << "	分数：" << s.score << endl;
+}
+
+//传址
+void my_print2(Student* p)
+{
+	cout << "姓名：" << p->name<< "	年龄：" << p->age << "	分数：" << p->score << endl;
+
+}
+
+int main()
+{
+	Student s1 = { "涛",18,99 };
+
+	//传值
+	my_print1(s1);
+
+	//传址
+	my_print2(&s1);
+
+	system("pause");
+	return 0;
+}
+```
+
+## 8.7 const使用
+
+**作用：**防止误操作
+
+* **const 修饰后，不可赋值**
+* **形参用指针，可减少内存空间，没有新的副本**
+
+```c++
+#include<iostream>
+using namespace std;
+
+struct Student
+{
+	string name;
+	int age;
+	int score;
+};
+
+//传址
+void my_print2(const Student* p)
+{
+	//p->age = 150;				//const修饰，不可赋值，防止误操作
+	cout << "姓名：" << p->name << "	年龄：" << p->age << "	分数：" << p->score << endl;
+
+}
+
+int main()
+{
+	Student s1 = { "涛",18,99 };
+
+	//传址
+	my_print2(&s1);
+
+	system("pause");
+	return 0;
+}
+```
+
+## 8.8 案例
+
+### 8.8.1 案例1
+
+描述：毕设项目，3个老师，每个老师带5名学生
+
+* 老师结构体：老师姓名、存5名学生的数组
+* 学生结构体：学生姓名、分数
+* 创建结构体数组放3名老师，通过**函数**给老师及所带的学生赋值
+* **打印**出老师、学生数据
+
+| TeacherA |          |      |       |
+| -------- | -------- | ---- | ----- |
+|          | StudentA | name | score |
+| TeacherB |          |      |       |
+|          | StudentB | name | score |
+
+* 执行完程序，敲任意键，程序崩了，？`引发了异常: 读取访问权限冲突。_Pnext 是 0x5F746E69。`
+* 跟第4个 ==04 结构体嵌套.cpp== 中的结构体冲突
+
+![](E:\09_sd\vs2019\2023_01_Cpp_Class\assets\屏幕截图 2023-01-02 181256.png)
+
+* 代码：
+
+```c++
+#include<iostream>
+using namespace std;
+
+//学生定义
+struct Student
+{
+	string sName;
+	int score;
+};
+
+//老师定义
+struct Teacher
+{
+	string tName;
+	Student sArray[5];
+};
+
+
+//赋值，传址
+void SetInfo(Teacher tArray[], int len)
+{
+	string nameseed = "ABCDEFG";	//种子
+	for (int i = 0; i < len; i++)
+	{
+		tArray[i].tName = "Teacher_";
+		tArray[i].tName += nameseed[i];
+		for (int j = 0; j < 5; j++)
+		{
+			tArray[i].sArray[j].sName = "Student_";
+			tArray[i].sArray[j].sName += nameseed[j];
+
+			int rand_score = rand() % 41 + 60;//0-40 60-100
+			tArray[i].sArray[j].score = rand_score;
+		}
+	}
+}
+
+//打印
+void MyPrint(Teacher tArray[], int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		cout << tArray[i].tName << endl;
+		for (int j = 0; j < 5; j++)
+		{
+			cout <<"\t" << tArray[i].sArray[j].sName << "\t" <<tArray[i].sArray[j].score << endl;
+		}
+	}
+}
+int main()
+{
+	srand((unsigned int)time(NULL));	//基于时间的种子
+	//老师结构体数组
+	Teacher tArray[3];
+
+	//赋值
+	int len = sizeof(tArray) / sizeof(tArray[0]);//元素个数	3个老师打团
+	SetInfo(tArray, len);		//
+
+	//打印
+	MyPrint(tArray, len);
+
+	system("pause");
+	return 0;
+}
+```
+
+### 8.8.2 案例2——（冒泡排序）按年龄升序排列结构体数组
+
+描述：结构体数组排序
+
+```
+	{
+		{"刘备", 23, "男"},
+		{"关羽", 22, "男"},
+		{"张飞", 20, "男"},
+		{"赵云", 21, "男"},
+		{"貂蝉", 19, "女"}
+	};
+```
+
+代码1——基础版：
+
+* 结构体，按年龄排序——==指针==、函数、结构体、==冒泡排序==
+
+```c++
+#include<iostream>
+using namespace std;
+
+struct Hero
+{
+	string name;
+	int age;
+	string sex;
+};
+
+//bubblesort
+void bubblesort_by_age(Hero h[], int len)
+{
+	for (int i = 0; i < len - 1; i++)		//外层，几轮，元素-1
+	{
+		for (int j = 0; j < len - 1 - i; j++)
+		{
+			if (h[j].age > h[j + 1].age)	//前大，则后移动
+			{
+				Hero tmp = h[j];			//个人信息整体移动
+				h[j]= h[j + 1];
+				h[j + 1] = tmp;
+			}
+		}
+	}
+}
+
+void myprint(Hero h[], int len)
+{
+	for (int i = 0; i < len; i++,h++)
+	{
+		cout << "\t" << h->name << " " << h->age << " " << h->sex << endl;
+	}
+}
+int main()
+{
+	Hero h[]=
+	{
+		{"刘备", 23, "男"},
+		{"关羽", 22, "男"},
+		{"张飞", 20, "男"},
+		{"赵云", 21, "男"},
+		{"貂蝉", 19, "女"}
+	};
+
+	int len = sizeof(h) / sizeof(h[0]);
+
+	//排序前
+	cout << "排序前：" << endl;
+	myprint(h, len);
+
+	//冒泡排序，按年龄升序排列
+	bubblesort_by_age(h, len);
+
+	//打印排序后结果
+	cout << "排序前：" << endl;
+	myprint(h, len);
+
+	system("pause");
+
+	return 0;
+}
+```
