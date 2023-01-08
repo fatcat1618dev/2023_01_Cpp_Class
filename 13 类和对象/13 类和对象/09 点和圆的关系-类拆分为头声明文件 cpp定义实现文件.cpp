@@ -70,7 +70,7 @@ int flag_rel(Circle2& c, Point2& p)
 	}
 }
 
-int main()
+int main9()
 {
 	Circle2 c;	//°ë¾¶rµÄÔ²,×ø±ê(x,y)´¦
 	c.setr(10);
