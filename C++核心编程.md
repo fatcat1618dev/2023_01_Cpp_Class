@@ -2649,17 +2649,1784 @@ int main()
 
 <font color="pink">P121~P126</font>
 
+对已有的运算符重新进行定义，赋予其另一种功能，以适应不同的数据类型
+
+
+
+### 4.5.1 加号
+
+
+
+实现两个自定义数据类型相加的运算
+
+* 成员函数重载+
+* 全局函数重载+
+
+```c++
+#include<iostream>
+using namespace std;
+
+//加号运算符重载
+//自定义类型，如两个person属性的加法运算
+
+class Person
+{
+public:
+	//Person operator+(Person& p);
+	int m_A;
+	int m_B;
+};
+
+
+////1 成员函数重载+，全局类似，不过要传入两个参数
+//Person Person::operator+(Person& p)
+//{
+//	Person tmp;
+//	tmp.m_A = this->m_A + p.m_A;
+//	tmp.m_B = this->m_B + p.m_B;
+//	return tmp;
+//}
+
+//全局函数重载+
+Person operator+(Person& p1, Person& p2)
+{
+	Person tmp;
+	tmp.m_A = p1.m_A + p2.m_A;
+	tmp.m_B = p1.m_A + p2.m_B;
+	return tmp;
+}
+
+void test01()
+{
+	Person p1;
+	p1.m_A = 1;
+	p1.m_B = 2;
+
+	Person p2;
+	p2.m_A = 10;
+	p2.m_B = 20;
+	
+	Person p3 = p1 + p2;
+	cout << "p3 m_A="<<p3.m_A << endl;
+	cout << "p3 m_B=" <<p3.m_B << endl;
+}
+
+void test02()
+{
+	Person p1;
+	p1.m_A = 1;
+	p1.m_B = 2;
+
+	Person p2;
+	p2.m_A = 10;
+	p2.m_B = 20;
+
+	Person p3 = p1 + p2;
+	cout << "p3 m_A=" << p3.m_A << endl;
+	cout << "p3 m_B=" << p3.m_B << endl;
+}
+
+int main()
+{
+	//test01();//成员函数重载
+	test01();//全局函数重载+
+	system("pause");
+
+	return 0;
+}
+```
+
+* 成员函数重载+，==operator+==
+* 全局函数重载+，==operator+==
+
+
+
+### 4.5.2 左移
+
+可以输出自定义的类型
+
+```c++
+#include<iostream>
+using namespace std;
+
+//左移运算符重载
+class Person
+{
+	friend ostream& operator<<(ostream& cout, Person& p);//友元
+public:
+	//列表初始化
+	Person(int a,int b):m_A(a),m_B(b){}
+private:
+	int m_A;
+	int m_B;
+};
+
+//全局函数 重载 左移<<运算符
+ostream& operator<<(ostream& cout, Person& p)
+{
+	cout << "a:" << p.m_A << " b:" << p.m_B << endl;
+	return cout;
+}
+void test01()
+{
+	Person p1(6, 9);			//有参构造
+
+	cout << p1 << endl;			//链式编程
+
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 左移运算符<<，只能全局函数重载，cout 是==ostream==类型！
+* 友元访问类内部数据，类内最顶部 `friend ostream& operator<<(ostream& cout, Person& p);//友元`
+
+
+
+### 4.5.3 递增
+
+
+
+重载递增运算符，实现自己的整形数据
+
+* 递增运算符重载，前置++、后置++
+* 递减运算符重载，前置--、后置--
+
+
+
+前置++、后置++
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+
+//递增运算符重载
+//前置++、后置++
+
+class MyInteger
+{
+	friend ostream& operator<<(ostream& cout, MyInteger i);
+
+public:
+	MyInteger() :m_Num(0){}	//列表初始化，构造函数
+
+	//重载前置++	++a
+	MyInteger& operator++()
+	{
+		m_Num++;
+		return *this;
+	}
+	//重载后置++	a++
+	MyInteger operator++(int)	//占位符
+	{
+		//副本
+		MyInteger tmp=*this;			//用指针
+		m_Num++;
+		return tmp;
+	}
+private:
+	int m_Num;
+};
+
+ostream& operator<<(ostream& cout, MyInteger i)
+{
+	cout << i.m_Num;
+	return cout;
+}
+void test01()	//常规使用
+{
+	int i=0;
+	cout << i << endl;
+}
+
+void test02()
+{
+	MyInteger j;
+	cout << j << endl;
+}
+
+void test03()
+{
+	MyInteger a;
+	cout << ++a << endl;
+	cout << a << endl;
+
+	MyInteger b;
+	cout << b++ << endl;
+	cout << b << endl;
+}
+int main()
+{
+	test01();//常规使用
+	test02();//重载MyInteger运算符
+	test03();
+
+	system("pause");
+	return 0;
+}
+```
+
+* MyInteger的列表初始化
+* 传引用、传值`ostream& operator<<(ostream& cout, MyInteger i)`
+  * 考虑到前置++返回值传引用、后置传值，上面左移重载输入==第二个参数 用 MyInteger i，不用引用==！
+
+前置--、后置--
+
+```c++
+#include<iostream>
+using namespace std;
+
+//递-运算符重载		
+//前置--、后置--
+//5 --5 4 4
+//5 5-- 5 4
+class MyInteger
+{
+	friend ostream& operator<<(ostream& cout, MyInteger i);
+
+public:
+	MyInteger() :m_Num(5) {}	//列表初始化，构造函数
+
+	//重载前置--	--a
+	MyInteger& operator--()
+	{
+		m_Num--;
+		return *this;
+	}
+	//重载后置--	a--
+	MyInteger operator--(int)	//占位符
+	{
+		//副本
+		MyInteger tmp = *this;			//用指针
+		m_Num--;
+		return tmp;
+	}
+private:
+	int m_Num;
+};
+
+ostream& operator<<(ostream& cout, MyInteger i)
+{
+	cout << i.m_Num;
+	return cout;
+}
+void test01()	//常规使用
+{
+	int i = 0;
+	cout << i << endl;
+}
+
+void test02()
+{
+	MyInteger j;
+	cout << j << endl;
+}
+
+void test03()
+{
+	MyInteger a;
+	cout << --a << endl;
+	cout << a << endl;
+
+	MyInteger b;
+	cout << b-- << endl;
+	cout << b << endl;
+}
+int main()
+{
+	test01();//常规使用
+	test02();//重载MyInteger运算符
+	test03();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 和前置、后置++一致
+
+
+
+### 4.5.4 赋值
+
+C++编译器至少给一个类添加4个函数：
+
+1. 默认构造函数（无参，函数体为空）
+2. 默认析构参数（无参，函数体为空）
+3. 默认拷贝构造函数，对属性进行值拷贝
+4. 赋值运算符operator=，对属性进行值拷贝
+
+
+
+如果类中有属性指向堆区，做赋值操作时也会出现==深浅拷贝==问题，**要重写析构函数，避免重复释放内存**
+
+
+
+示例：
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+
+//p3(30)=p2(20)=p1(10)	连等，链式编程
+class Person
+{
+	friend ostream& operator<<(ostream& cout, Person& p);	//友元
+
+public:
+	//列表
+	Person(int a)
+	{
+		m_A = new int(a);		//堆区，深拷贝
+	}
+
+	//= 成员函数，重载
+	Person& operator=(Person& p)
+	{
+		if (m_A != NULL)
+		{
+			delete m_A;
+			m_A = NULL;
+		}
+		m_A = new int(*p.m_A);
+		return *this;
+	}
+	~Person()
+	{
+		if (m_A != NULL)
+		{
+			delete m_A;
+			m_A = NULL;
+		}
+	}
+
+	int *m_A;
+};
+
+//左移<<重载
+ostream& operator<<(ostream& cout, Person& p)
+{
+	cout << *p.m_A;
+	return cout;
+}
+
+
+
+//测试01
+void test01()
+{
+	Person p1(10);
+	cout << p1 << endl;
+}
+
+void test02()	//<<	=运算符重载
+{
+
+	Person p1(2);
+	Person p2(4);
+	Person p3(6);
+	p3 = p2 = p1;
+	cout << p2 << endl;
+	cout << p3 << endl;
+
+}
+int main()
+{
+	cout << "1.普通" << endl;
+	test01();//正常赋值、显示
+
+	cout << "2.运算符重载——左移<<	赋值=——" << endl;
+	test02();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 左移<<	运算符重载
+* 赋值=      运算符重载
+  * 堆区、==深拷贝== ——new，避免内存重复释放
+
+
+
+### 4.5.5 关系
+
+重载关系运算符，让两个==自定义类型对象==进行对比操作
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+//Person == !=，重载
+class Person
+{
+public:
+	Person(string name, int age)
+	{
+		m_Name = name;
+		m_Age = age;
+	}
+	//重构==
+	bool operator == (Person & p)
+	{
+		if (this->m_Name == p.m_Name && this->m_Age == p.m_Age)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	//重构!=
+	bool operator != (Person& p)
+	{
+		if (this->m_Name != p.m_Name || this->m_Age != p.m_Age)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	string m_Name;
+	int m_Age;
+};
+
+void test01()
+{
+	Person p1("张涛", 18);
+	Person p2("张涛", 18);
+	Person p3("新朋", 16);
+
+	p1 == p2 ? cout << "相等" <<endl: cout << "不等" << endl;
+	p2 != p3 ? cout << "不等" << endl : cout << "相等" << endl;
+
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* ==    重载，可返回bool类型，后续根据这个判断
+* !=     重载
+
+
+
+### 4.5.6 函数调用
+
+* 函数调用运算符（）也可重载
+* 重载后使用方式很像函数的调用，也称为==仿函数==
+* 仿函数无固定写法，非常灵活
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+class MyAdd
+{
+public:
+	int operator()(int a,int b)
+	{
+		return a + b;
+	}
+};
+int main()
+{
+	//仿函数、重载()、匿名对象
+
+	cout << "a+b=" << MyAdd()(1,9)<< endl;
+
+	system("pause");
+	return 0;
+}
+```
+
+* 仿函数——重载小括号()
+* ==匿名对象==——类型+小括号，执行完当前行立即释放
+
+
+
 ## 4.6 继承
 
 <font color="pink">P127~P134</font>
+
+
+
+**继承是面向对象三大特性之一**
+
+
+
+定义某些类时，下级别成员除了拥有上一级的==共性==，还有自己的特性，这时==可以用继承，减少重复代码==！
+
+
+
+### 4.6.1 基本语法
+
+class A: public B;
+
+* A类称为==子==类	==派生==类
+  * 一类基类继承的，表现共性
+  * 一类自己新增的，表现个性
+* B类称为==父==类    ==基==类
+
+代码：
+
+```c++
+#include<iostream>
+using namespace std;
+
+//基类
+//class A:public B{}
+
+class BaseInfo
+{
+public:
+	void header()
+	{
+		cout << "首页、登录、注册..." << endl;
+	}
+	void footer()
+	{
+		cout << "帮助、交流、站内..." << endl;
+	}
+	void lefter()
+	{
+		cout << "Java、Python、C++..." << endl;
+	}
+};
+
+class CPP :public BaseInfo
+{
+public :
+	void content()
+	{
+		cout << "CPP..." << endl;
+	}
+};
+class Python :public BaseInfo
+{
+public:
+	void content()
+	{
+		cout << "Python..." << endl;
+	}
+};
+//
+void case01()
+{
+	cout << "------------------------" << endl;
+	CPP().header();		//匿名对象
+	CPP().footer();
+	CPP().lefter();
+	CPP().content();
+	cout << "------------------------" << endl;
+	Python().header();
+	Python().footer();
+	Python().lefter();
+	Python().content();
+	cout << "------------------------" << endl;
+
+}
+int main()
+{
+	case01();//
+
+	system("pause");
+	return 0;
+}
+```
+
+
+
+### 4.6.2 继承方式
+
+语法：`class 子类 ：继承方式 父类`
+
+其中继承方式有3种：
+
+* 公共继承
+  * 父类中公共权限成员，公共权限
+  * 父类中保护权限成员，保护权限，类外访问不到
+  * 父类中私有权限访问不到
+* 保护继承
+  * 父类中公共权限成员，==变为==保护权限，类外访问不到
+  * 父类中保护权限成员，        保护权限，类外访问不到
+  * 父类中私有权限成员，访问不到
+* 私有继承
+  * 父类中公共权限成员，==变为==私有权限
+  * 父类中保护权限成员，==变为==私有权限
+  * 父类中私有权限成员，访问不到
+
+```c++
+#include<iostream>
+using namespace std;
+
+//爷、父、子继承
+class GrandFather
+{
+public:
+	int m_A;
+protected:
+	int m_B;
+private:
+	int m_C;
+};
+class Son:private GrandFather
+{
+public:
+	void func()
+	{
+		m_A = 100;
+		m_B = 10;
+		//m_C = 1;	//私有不可访问
+	}
+};
+
+class GrandSon:private Son
+{
+public:
+	void func()
+	{
+		//m_A = 10;		//私有化了，访问不到
+		//m_B = 11;
+	}
+};
+
+int main()
+{
+	system("pause");
+	return 0;
+}
+```
+
+
+
+### 4.6.3 继承中的对象模型
+
+从父类继承过来的成员，哪些属于子类对象中？
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+//爷、父、子继承
+class Base
+{
+public:
+	int m_A;
+protected:
+	int m_B;
+private:
+	int m_C;
+};
+class Son:private Base
+{
+public:
+	int m_D;
+};
+
+void case01()
+{
+	Son s1;
+	cout << sizeof(s1) << endl;
+}
+
+
+int main()
+{
+	case01();	//16 bytes
+
+	system("pause");
+	return 0;
+}
+```
+
+* ==开发人员命令提示工具==查看对象模型	Visual Studio 2019 Developer Command ==Prompt== v16.11.11
+  * 跳转盘符 如F:
+  * cd具体路径下
+  * cl /d1 reportSingleClassLayout类名 文件名，如`cl /d1 reportSingleClassLayoutSon "03 继承中的对象模型.cpp"`
+    * cl，==l小写的L==
+    * 文件名，03然后tab自动补齐
+
+<img src="assets\image-20230111234026688.png" alt="image-20230111234026688" style="zoom:67%;" />
+
+<img src="assets\image-20230111234621202.png" alt="image-20230111234621202" style="zoom: 67%;" />
+
+* 父类中的私有成员也被子类继承了，限制访问了
+
+
+
+### 4.6.4 继承中构造和析构顺序
+
+子类继承父类后，当创建子对象时，也用调用父类构造函数，那父类和子类的构造、析构顺序是？
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+class Base
+{
+public:
+	Base()
+	{
+		cout << "Base构造" << endl;
+	}
+	~Base()
+	{
+		cout << "Base析构" << endl;
+	}
+};
+
+class Son:public Base
+{
+public:
+	Son()
+	{
+		cout << "Son构造" << endl;
+	}
+	~Son()
+	{
+		cout << "Son析构" << endl;
+	}
+};
+
+//
+void case01()
+{
+	Son s;
+}
+int main()
+{
+	case01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 构造父类、子类
+* 析构           子类、父类，==和构造相反==
+
+
+
+### 4.6.5 继承同名成员处理方式
+
+
+
+当子类与父类出现同名成员，如何通过子类对象，访问到子类或父类中的同名数据？
+
+* 访问子类同名成员	直接访问即可
+* 访问父类同名成员    加作用域
+
+
+
+示例：
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+
+//继承中的同名成员
+//成员属性
+//函数
+class Base
+{
+public:
+	Base()
+	{
+		m_A = 100;
+	}
+	void func()
+	{
+		cout << "Base 成员函数" << endl;
+	}
+	int m_A;
+};
+class Son:public Base
+{
+public:
+	Son()
+	{
+		m_A = 200;
+	}
+	void func()
+	{
+		cout << "Son 成员函数" << endl;
+	}
+	int m_A;
+};
+
+void case01()
+{
+	Son s;
+	cout << "Son m_A	" << s.m_A << endl;
+	cout << "Base m_A	" << s.Base::m_A << endl;
+
+}
+int main()
+{
+
+	case01();
+	system("pause");
+	return 0;
+}
+```
+
+* 子类对象可直接访问子类中的同名成员，加作用域可访问到父类同名成员
+* 同名成员函数类似
+
+
+
+### 4.6.6 继承同名静态成员处理方式
+
+
+
+问题：继承中同名的静态成员在子类对象上如何进行访问？
+
+静态成员、非静态成员出现同名，处理方式一致：
+
+* 访问子类同名成员	直接访问
+* 访问父类同名成员    ==加作用域==
+
+```c++
+#include<iostream>
+using namespace std;
+
+//同名静态成员
+
+class Base
+{
+public:
+	static int m_A;
+	static void func()
+	{
+		cout << "Base 下 func()" << endl;
+	}
+	static void func(int)
+	{
+		cout << "Base 下 func(int)" << endl;
+	}
+};
+//类外初始化
+
+int Base::m_A = 45;
+
+class Son:public Base
+{
+public:
+	static int m_A;
+	static void func()
+	{
+		cout << "Son 下 func()" << endl;
+	}
+};
+int Son::m_A = 20;
+
+void case01()
+{
+	//通过对象访问
+	cout << "通过对象访问： "<<endl;
+	Son s;
+	cout << "Son 下 m_A " << s.m_A << endl;
+	cout << "Base 下 m_A " << s.Base::m_A << endl;
+
+	//2.通过类名访问
+	cout << "通过类名访问" << endl;
+	cout << "Son 下 m_A " << Son::m_A << endl;
+	//通过类名、父类作用域下
+	cout << "Base 下 m_A " <<Son::Base::m_A<< endl;
+}
+
+void case02()
+{
+	//通过对象访问
+	cout << "通过对象访问： " << endl;
+	Son s;
+	s.func();
+	s.Base::func();
+
+	//2.通过类名访问
+	cout << "通过类名访问" << endl;
+	Son::func();
+	//通过类名、父类作用域下
+	Son::Base::func();
+}
+int main()
+{
+	case01();
+	cout << "---------------------------" << endl;
+	case02();
+	system("pause");
+	return 0;
+}
+```
+
+
+
+### 4.6.7 多继承语法
+
+> C++允许一个类继承多个类
+>
+> 语法：`class 子类：继承方式 父类1，继承方式 父类2...`
+>
+> 多继承可能会引发父类中有同名成员出现，需要==加作用域==区分，实际开发中==不建议用==
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+//多继承，多个父类
+class Base1
+{
+public:
+	Base1()
+	{
+		m_A = 1;
+		m_B = 0;
+	}
+	int m_A;
+	int m_B;
+};
+
+class Base2
+{
+public:
+	Base2()
+	{
+		m_B = 2;
+	}
+	int m_B;
+};
+
+class Son :public Base1, public Base2
+{
+public:
+	Son()
+	{
+		m_C = 3;
+	}
+	int m_C;
+};
+
+void test01()
+{
+	Son	s;
+	cout << s.m_A << endl;
+	cout << s.Base1::m_B << endl;
+	cout << s.Base2::m_B << endl;
+	cout << s.m_C << endl;
+}
+
+int main()
+{
+	test01();
+	system("pause");
+	return 0;
+}
+```
+
+* 多继承中若父类中出现了同名，子类使用时，==加上作用域==
+
+
+
+### 4.6.8 菱形继承
+
+
+
+菱形继承（钻石继承）：
+
+* 两个派生类继承同一个基类
+* 某个类同时继承两个派生类
+
+
+
+典型案例：
+
+* 动物
+* 羊、驼
+* 羊驼（草泥马）
+
+问题：
+
+* 羊、驼都继承了动物数据
+* 草泥马分别继承羊、驼，动物数据继承了两份，使用数据时，就会产生二义性（动物数据1份即可）
+
+
+
+```c++
+#include<iostream>
+using namespace std;
+
+//动物
+class Animal
+{
+public:
+	int m_Age = 10;
+};
+//羊
+class Sheep :virtual public Animal{};
+//驼
+class Camel :virtual public Animal{};
+//草泥马
+class Alpaca:public Sheep,public Camel {};
+
+void test01()
+{
+	Alpaca yt;
+	//菱形继承，父类相同数据，加作用域区分
+	yt.Sheep::m_Age = 6;
+	yt.Camel::m_Age = 3;
+
+	//菱形继承相同数据有两份，资源浪费
+	//virtual关键字，虚继承	虚基指针
+	cout << "Animal "<<yt.m_Age << endl;
+	cout << "Sheep " << yt.m_Age << endl;
+	cout << "Camel " << yt.m_Age << endl;
+
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 菱形继承问题是，子类继承了两份相同数据，导致资源浪费
+* 利用虚继承可解决菱形继承问题（虚基指针 vbptr）
+
+> ==开发人员命令提示工具==查看对象模型	Visual Studio 2019 Developer Command ==Prompt== v16.11.11
+>
+> * 跳转盘符 如F:
+> * cd具体路径下
+> * cl /d1 reportSingleClassLayout类名 文件名，如`cl /d1 reportSingleClassLayoutAlpaca 08`，tab键，自动补齐:
+>   * cl，==l小写的L==
+>   * 文件名，03然后tab自动补齐
+>
+> <img src="assets\image-20230112231300641.png" alt="image-20230112231300641" style="zoom: 67%;" />
+
+
 
 ## 4.7 多态
 
 <font color="pink">P135~P142</font>
 
- 
+###  4.7.1 多态的基本概念
 
 
+
+多态是C++面向对象的三大特性之一
+
+多态分两类：
+
+* 静态多态：函数重载和运算符重载都属于静态多态，复用函数名
+* 动态多态：==派生类==和==虚函数==，实现运行时多态
+
+区别：
+
+* 静态多态的函数地址==早==绑定——==编译阶段==确定函数地址
+* 动态多态的函数地址==晚==绑定——==运行阶段==确定函数地址
+
+
+
+示例：
+
+```c++
+#include<iostream>
+using namespace std;
+
+class Animal
+{
+public:
+	virtual void speak()
+	{
+		cout << "Animal在说话！" << endl;
+	}
+};
+
+class Dog :public Animal
+{
+public:
+	void speak()
+	{
+		cout << "Dog在说话！" << endl;
+	}
+};
+class Cat :public Animal
+{
+public:
+	void speak()
+	{
+		cout << "Cat在说话！" << endl;
+	}
+};
+
+void doSpeak(Animal& p)
+{
+	p.speak();
+}
+
+void test01()
+{
+	Dog d;
+	doSpeak(d);
+
+	Cat c;
+	doSpeak(c);
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 基类中有virtual关键字，==虚函数==！
+* ==C++规定，当一个类中的成员函数被声明为虚函数后，派生类中的同名函数都自动成为虚函数，因此，子类重新声明该函数时，可加、可不加virtual关键字！==
+
+
+
+**小结：**
+
+多态满足条件：
+
+*  有继承关系
+* 子类==重写父类中的虚函数==
+
+多态使用条件：
+
+* 父类引用（指针）指向子类对象
+
+重写：
+
+* 函数返回类型	函数名	参数列表，3者完全一致，称为重写
+
+
+
+#### **原理剖析：**
+
+```c++
+class Animal
+{
+public:
+	virtual void speak()
+	{
+		cout << "Animal在说话！" << endl;
+	}
+};
+```
+
+* 虚函数，sizeof(Animal)，4，==虚函数指针==vfptr，virtual function pointer，结构发生了改变！
+  * 虚函数指针，虚函数表
+* 若无virtual关键字，sizeof(Animal)，1，空类大小为1
+
+<img src="assets\image-20230113000838606.png" alt="image-20230113000838606" style="zoom:67%;" /><img src="assets\image-20230113001010579.png" alt="image-20230113001010579" style="zoom:67%;" />
+
+* 左图cat子类未重写父类中虚函数，注释掉了；右图重写了父类中虚函数
+* 可见vftable虚函数表内容不一样，vfptr虚函数指针根据==不同函数地址==入口，执行不同函数
+
+
+
+### 4.7.2 案例1 计算器类
+
+需求：
+
+* 普通写法，设计实现两个操作数进行运算的计算器类
+* 多态技术，设计实现两个操作数进行运算的计算器类
+
+
+
+多态的优点：
+
+* 代码组织结构清晰
+* 可读性强
+* 利于前期、后期的扩展及维护
+
+
+
+示例：
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+//普通实现
+class Calc
+{
+public:
+	Calc(int a, int b)	//构造函数
+	{
+		m_Num1 = a;
+		m_Num2 = b;
+	}
+	//计算
+	int getResult(string oper)
+	{
+		if (oper == "+")
+			return m_Num1 + m_Num2;
+		else if (oper == "-")
+			return m_Num1 - m_Num2;
+		else if (oper == "*")
+			return m_Num1 * m_Num2;
+		else if (oper == "/")
+			return m_Num1 / m_Num2;
+
+		//扩展，需要修改源码
+		//开闭原则，扩展开放、修改关闭
+	}
+	int m_Num1;
+	int m_Num2;
+};
+
+void test01()
+{
+	Calc c(5, 10);
+	cout << c.m_Num1<<" + "<<c.m_Num2<<" = "<<c.getResult("+") << endl;
+	cout << c.m_Num1 << " - " << c.m_Num2 << " = " << c.getResult("-") << endl;
+	cout << c.m_Num1 << " * " << c.m_Num2 << " = " << c.getResult("*") << endl;
+	cout << c.m_Num1 << " / " << c.m_Num2 << " = " << c.getResult("/") << endl;
+
+}
+
+//多态实现计算器类
+//计算器抽象类
+class AbstractCalc
+{
+public:
+	virtual int getResult()
+	{
+		return 0;
+	}
+	int m_Num1;
+	int m_Num2;
+};
+//加法
+class AddCalc :public AbstractCalc
+{
+public:
+	int getResult()
+	{
+		return m_Num1 + m_Num2;
+	}
+};
+//减法
+class SubCalc :public AbstractCalc
+{
+public:
+	int getResult()
+	{
+		return m_Num1 - m_Num2;
+	}
+};
+//乘法
+class MulCalc :public AbstractCalc
+{
+public:
+	int getResult()
+	{
+		return m_Num1 * m_Num2;
+	}
+};
+
+//除法
+class DivCalc :public AbstractCalc
+{
+public:
+	int getResult()
+	{
+		return m_Num1 / m_Num2;
+	}
+};
+
+//多态条件
+//父类引用（指针）指向子类对象
+//虚函数
+
+void test02()
+{
+	//乘法
+	AbstractCalc* p = new MulCalc;
+	p->m_Num1 = 5;
+	p->m_Num2 = 10;
+	cout << p->getResult() << endl;
+	//销毁
+	delete p;
+
+	//减法
+	p = new SubCalc;
+	p->m_Num1 = 5;
+	p->m_Num2 = 10;
+	cout << p->getResult() << endl;
+	//销毁
+	delete p;
+}
+int main()
+{
+	//test01();
+
+	test02();
+	system("pause");
+	return 0;
+}
+```
+
+小结：
+
+* C++提倡利用多态设计==程序架构==，多态优点很多
+
+
+
+### 4.7.3 纯虚函数和抽象类
+
+在多态中，通常父类中虚函数的实现是无意义的，主要都是调用子类重写的内容，因此可以将虚函数改为==纯虚函数==！
+
+语法：`virtual 返回值类型 函数名（参数列表）=0;`
+
+当类中有了纯虚函数，这个类也称为抽象类！
+
+特点：
+
+* 无法实例化对象
+* 子类必须重写抽象类中的纯虚函数，否则也属于抽象类
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+//
+class Base
+{
+public:
+	virtual void func() = 0;
+};
+
+class Son :public Base
+{
+public:
+	void func() 
+	{
+		cout << "子类调用" << endl;
+	};
+};
+//不重写，无法创建对象
+void test01()
+{
+	/*Son s;
+	s.func();*/
+
+	Base* p = new Son;
+	p->func();
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+
+
+### 4.7.4 案例2 制作饮品
+
+描述：制作饮品大致分为煮水、冲泡、倒入杯中、加入辅料4步
+
+利用多态，尝试制作饮品：
+
+* 咖啡——纯净水、糖&牛奶
+* 红茶——矿泉水、柠檬
+
+```c++
+#include<iostream>
+using namespace std;
+
+//基类、纯虚函数
+class MakeDrink
+{
+public:
+	//煮水
+	virtual void Boil() = 0;
+	//冲泡
+	virtual void Brew() = 0;
+	//倒入杯中
+	virtual void Pour() = 0;
+	//加入辅料
+	virtual void AddSometing() = 0;
+	void makeDrink()
+	{
+		Boil();
+		Brew();
+		Pour();
+		AddSometing();
+	}
+};
+
+//咖啡
+class makeCoffee :public MakeDrink
+{
+	//煮水
+	virtual void Boil()
+	{
+		cout << "煮纯净水..." << endl;
+	}
+	//冲泡
+	virtual void Brew()
+	{
+		cout << "冲泡咖啡..." << endl;
+	}
+	//倒入杯中
+	virtual void Pour()
+	{
+		cout << "倒入瓷杯..." << endl;
+	}
+	//加入辅料
+	virtual void AddSometing()
+	{
+		cout << "加糖、牛奶..." << endl;
+	}
+};
+
+//红茶
+class makeBlackTea :public MakeDrink
+{
+	//煮水
+	virtual void Boil()
+	{
+		cout << "煮矿泉水..." << endl;
+	}
+	//冲泡
+	virtual void Brew()
+	{
+		cout << "冲泡红茶..." << endl;
+	}
+	//倒入杯中
+	virtual void Pour()
+	{
+		cout << "倒入茶具中..." << endl;
+	}
+	//加入辅料
+	virtual void AddSometing()
+	{
+		cout << "加入柠檬..." << endl;
+	}
+};
+
+void doWork(MakeDrink* p)
+{
+	p->makeDrink();
+}
+
+
+void test01()
+{
+	cout << "..........制作咖啡.........." << endl;
+	doWork(new makeCoffee);
+	cout << "..........制作红茶.........." << endl;
+	doWork(new makeBlackTea);
+
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 用指针，父类指向子类
+
+
+
+### 4.7.5 虚析构和纯虚析构
+
+多态使用中，如子类中有属性开辟到堆区，那么==父类指针==在释放时<u>无法调用到子类的析构代码</u>
+
+解决办法：
+
+* 将父类中的析构函数改为==虚析构==或==纯虚析构==
+
+
+
+虚、纯析构共性：
+
+* 可解决父类指针释放子类对象
+* 都==需要具体的函数实现==
+
+区别：
+
+* 纯虚析构属于抽象类，无法实例化对象
+
+
+
+虚析构语法：
+
+`virtual ~类名（）{}`
+
+纯虚析构语法：
+
+`virtual ~类名（）=0;`
+
+`类名::~类名(){}`
+
+
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<iostream>
+using namespace std;
+
+class Animal
+{
+public:
+	Animal()
+	{
+		cout << "Animal构造" << endl;
+	}
+	virtual ~Animal()
+	{
+		cout << "Animal析构" << endl;
+	}
+	virtual void speak() = 0;//纯虚
+};
+
+class Cat:public Animal
+{
+public:
+	Cat(string name)
+	{
+		cout << "Cat构造" << endl;
+		m_Name = new string(name);
+	}
+	~Cat()
+	{
+		cout << "Cat析构" << endl;
+		delete m_Name;					//未走该行代码
+		m_Name = NULL;
+
+	}
+	void speak()
+	{
+		cout <<*m_Name<< "小猫在说话！" << endl;
+	}
+	string *m_Name;
+};
+
+void test01()
+{
+	Animal *p=new Cat("Tom");
+	p->speak();
+	delete p;		//释放才析构
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
+
+* 利用==虚析构==、纯虚析构，通过父类指针释放子类对象		解决父类指针释放子类对象不干净的问题   ==如子类在堆区开辟的内存==
+* 如子类中没有堆区数据，可不写虚析构、或纯虚析构
+* 拥有纯虚析构函数的类也属于抽象类，不能实例化对象。。。。
+
+```c++
+	virtual ~Animal()
+	{
+		cout << "Animal析构" << endl;
+	}
+```
+
+
+
+### 4.7.6 案例3 电脑组装
+
+案例描述：
+
+电脑主要组成部件：CPU、GPU、内存，将每个零件封装出==抽象基类==并提供不同的厂商生产不同的零件，如Intel、Lenovo
+
+创建电脑类提供让电脑工作的函数，并调用每个零件工作的接口
+
+组装3台不同的电脑进行工作
+
+```c++
+#include<iostream>
+using namespace std;
+
+class Cpu
+{
+public:
+	virtual void calculate() = 0;
+};
+
+class Gpu
+{
+public:
+	virtual void display() = 0;
+};
+
+class Memory
+{
+public:
+	virtual void storage() = 0;
+};
+
+//厂商，Intel/Lenovo
+class IntelCpu:public Cpu
+{
+public:
+	void calculate()
+	{
+		cout << "Intel的CPU运行ing" << endl;
+	}
+};
+class LenovoCpu :public Cpu
+{
+public:
+	void calculate()
+	{
+		cout << "Lenovo的CPU运行ing" << endl;
+	}
+};
+
+//GPU
+class IntelGpu :public Gpu
+{
+public:
+	void display()
+	{
+		cout << "Intel的GPU运行ing" << endl;
+	}
+};
+class LenovoGpu :public Gpu
+{
+public:
+	void display()
+	{
+		cout << "Lenovo的GPU运行ing" << endl;
+	}
+};
+//内存
+class IntelMemory :public Memory
+{
+public:
+	void storage()
+	{
+		cout << "Intel的DDR运行ing" << endl;
+	}
+};
+class LenovoMemory :public Memory
+{
+public:
+	void storage()
+	{
+		cout << "Lenovo的DDR运行ing" << endl;
+	}
+};
+
+//电脑类
+class PC
+{
+public:
+	PC(Cpu* cpu,Gpu* gpu,Memory* mem)
+	{
+		m_Cpu = cpu;
+		m_Gpu = gpu;
+		m_Memory = mem;
+	}
+	void pcRun()
+	{
+		m_Cpu->calculate();
+		m_Gpu->display();
+		m_Memory->storage();
+	}
+	~PC()
+	{
+		cout << "析构指针" << endl;
+		if (m_Cpu != NULL)
+		{
+			delete m_Cpu;
+			m_Cpu = NULL;
+		}
+		if (m_Gpu != NULL)
+		{
+			delete m_Gpu;
+			m_Gpu = NULL;
+		}
+		if (m_Memory != NULL)
+		{
+			delete m_Memory;
+			m_Memory = NULL;
+		}
+	}
+private:
+	Cpu* m_Cpu;
+	Gpu* m_Gpu;
+	Memory* m_Memory;
+};
+
+void test01()
+{
+	//组装第1台电脑
+	cout << "..................第1台................." << endl;
+	Cpu* intelcpu = new IntelCpu;
+	Gpu* intelgpu = new IntelGpu;		//IntelGpu是抽象类？
+	Memory* intelmem = new IntelMemory;	//抽象类？
+
+	PC* computer1 = new PC(intelcpu, intelgpu, intelmem);
+	computer1->pcRun();
+	delete computer1;
+
+	//第2台
+	cout << "..................第2台................." << endl;
+	PC* computer2 = new PC(new LenovoCpu, new LenovoGpu, new LenovoMemory);
+	computer2->pcRun();
+	delete computer2;
+	
+}
+int main()
+{
+	test01();
+
+	system("pause");
+	return 0;
+}
+```
 
 
 
